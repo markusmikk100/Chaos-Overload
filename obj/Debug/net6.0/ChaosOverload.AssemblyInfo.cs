@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("ChaosOverload")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+9e77babf708b97565ab2dd48ec909a79401550bf")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+5c758b12f75f6248a5947ebc1d5e73186917e0ef")]
 [assembly: System.Reflection.AssemblyProductAttribute("ChaosOverload")]
 [assembly: System.Reflection.AssemblyTitleAttribute("ChaosOverload")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
