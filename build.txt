@@ -1,0 +1,3 @@
+displayName = Chaos Overload
+author = Mikk & Mqx
+version = 0.1
