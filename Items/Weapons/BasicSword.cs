@@ -2,7 +2,7 @@ using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
 
-namespace ChaosOverload.Items
+namespace ChaosOverload.Items.Weapons
 {
 	public class BasicSword : ModItem
 	{
