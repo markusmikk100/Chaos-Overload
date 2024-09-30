@@ -3,4 +3,11 @@ Items: {
 		DisplayName: Basic Sword
 		Tooltip: ""
 	}
+
+	Lightning: {
+		DisplayName: Lightning
+		Tooltip: ""
+	}
 }
+
+Projectiles.Lightning_Projectile.DisplayName: Lightning_ Projectile
