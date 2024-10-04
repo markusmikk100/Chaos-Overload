@@ -8,6 +8,14 @@ Items: {
 		DisplayName: Lightning
 		Tooltip: ""
 	}
+
+	BeamGun: {
+		DisplayName: Beam Gun
+		Tooltip: ""
+	}
 }
 
-Projectiles.Lightning_Projectile.DisplayName: Lightning_ Projectile
+Projectiles: {
+	Lightning_Projectile.DisplayName: Lightning_ Projectile
+	Beam.DisplayName: Beam
+}
