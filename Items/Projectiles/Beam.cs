@@ -8,7 +8,7 @@ namespace ChaosOverload.Items.Projectiles
 {
     public class Beam : ModProjectile
     {
-        public static int lifetime = 25;
+        public static int lifetime = 600;
 
         public override void SetDefaults()
         {
