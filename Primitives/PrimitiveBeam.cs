@@ -1,6 +1,7 @@
 using ChaosOverload.Items.Projectiles;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using ReLogic.Content;
 using Terraria;
 using Terraria.GameContent;
 using Terraria.ModLoader;
@@ -16,6 +17,7 @@ namespace ChaosOverload.Primitives
         private readonly int endHeightExtra = 13;
 
         private BasicEffect basicEffect;
+        private Effect beamEffect;
 
         public override void Load()
         {
@@ -29,6 +31,8 @@ namespace ChaosOverload.Primitives
                     View = Main.GameViewMatrix.TransformationMatrix
                 };
             }).Wait();
+
+            beamEffect = ModContent.Request<Effect>("ChaosOverload/Shaders/BeamShader", AssetRequestMode.ImmediateLoad).Value;
         }
 
         private void DrawTriangle(Projectile projectile)
@@ -37,10 +41,10 @@ namespace ChaosOverload.Primitives
             float rotation = projectile.rotation;
             float lengthMultiplier = 1 - projectile.timeLeft / (float)Beam.lifetime;
 
-            Vector2 v0 = new (0, -startHeigh);
-            Vector2 v1 = new (0, startHeigh);
-            Vector2 v2 = new (length * lengthMultiplier, -startHeigh - endHeightExtra * lengthMultiplier);
-            Vector2 v3 = new (length * lengthMultiplier, startHeigh + endHeightExtra * lengthMultiplier);
+            Vector2 v0 = new(0, -startHeigh);
+            Vector2 v1 = new(0, startHeigh);
+            Vector2 v2 = new(length * lengthMultiplier, -startHeigh - endHeightExtra * lengthMultiplier);
+            Vector2 v3 = new(length * lengthMultiplier, startHeigh + endHeightExtra * lengthMultiplier);
 
             VertexPositionColorTexture[] vertices = [
                 new(new Vector3(center + v0.RotatedBy(rotation), 0f), Color.White, Vector2.Zero),
@@ -54,12 +58,16 @@ namespace ChaosOverload.Primitives
 
         public override void PostDrawTiles()
         {
-            basicEffect.World = Matrix.CreateTranslation(new Vector3(-Main.screenPosition, 0));
+            Matrix world = Matrix.CreateTranslation(new Vector3(-Main.screenPosition, 0));
+            Matrix view = Main.GameViewMatrix.TransformationMatrix;
             var viewport = GraphicsDevice.Viewport;
-            basicEffect.Projection = Matrix.CreateOrthographicOffCenter(left: 0, right: viewport.Width, bottom: viewport.Height, top: 0, zNearPlane: -1, zFarPlane: 10);
-            Main.graphics.GraphicsDevice.RasterizerState = RasterizerState.CullNone;
+            Matrix projection = Matrix.CreateOrthographicOffCenter(0, viewport.Width, viewport.Height, 0, -1, 10);
+
+            beamEffect.Parameters["WorldViewProjection"].SetValue(world * view * projection);
+            beamEffect.CurrentTechnique.Passes[0].Apply();
+
+            GraphicsDevice.RasterizerState = RasterizerState.CullNone;
             GraphicsDevice.Textures[0] = TextureAssets.MagicPixel.Value;
-            basicEffect.CurrentTechnique.Passes[0].Apply();
 
             int projectileType = ModContent.ProjectileType<Beam>();
             for (int i = 0; i < Main.projectile.Length; i++)
@@ -77,6 +85,9 @@ namespace ChaosOverload.Primitives
             {
                 basicEffect?.Dispose();
                 basicEffect = null;
+
+                beamEffect?.Dispose();
+                beamEffect = null;
             });
         }
     }

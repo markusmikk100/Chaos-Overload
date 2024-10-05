@@ -1,32 +1,42 @@
-sampler uImage0 : register(s0);
-sampler uImage1 : register(s1);
-float3 uColor;
-float3 uSecondaryColor;
-float uOpacity;
-float uSaturation;
-float uRotation;
-float uTime;
-float4 uSourceRect;
-float2 uWorldPosition;
-float uDirection;
-float3 uLightSource;
-float2 uImageSize0;
-float2 uImageSize1;
-float2 uTargetPosition;
-float4 uLegacyArmorSourceRect;
-float2 uLegacyArmorSheetSize;
-    
-float4 ArmorBasic(float4 sampleColor : COLOR0, float2 coords : TEXCOORD0) : COLOR0
+sampler2D TextureSampler : register(s0);
+
+float4x4 WorldViewProjection;
+
+struct VertexShaderInput
 {
-    float4 color = tex2D(uImage0, coords);
-    color.rgb *= uColor;
-    return color * sampleColor;
+    float4 Position : POSITION0;
+    float4 Color : COLOR0;
+    float2 TexCoord : TEXCOORD0;
+};
+
+struct VertexShaderOutput
+{
+    float4 Position : POSITION0;
+    float4 Color : COLOR0;
+    float2 TexCoord : TEXCOORD0;
+};
+
+VertexShaderOutput VertexShaderFunction(VertexShaderInput input)
+{
+    VertexShaderOutput output;
+    output.Position = mul(input.Position, WorldViewProjection);
+    output.Color = input.Color;
+    output.TexCoord = input.TexCoord;
+    return output;
 }
-    
-technique Technique1
+
+float4 PixelShaderFunction(VertexShaderOutput input) : COLOR0
 {
-    pass ArmorBasic
+    float4 color = tex2D(TextureSampler, input.TexCoord);
+    color.rgb = float3(1, 0, 0);
+    return color;
+}
+
+technique BasicTechnique
+{
+    pass P0
     {
-        PixelShader = compile ps_2_0 ArmorBasic();
+        VertexShader = compile vs_2_0 VertexShaderFunction();
+        PixelShader = compile ps_2_0 PixelShaderFunction();
     }
 }
