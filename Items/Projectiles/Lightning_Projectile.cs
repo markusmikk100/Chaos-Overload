@@ -3,6 +3,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Terraria;
 using Terraria.Audio;
 using Terraria.DataStructures;
+using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.ModLoader;
 
@@ -22,13 +23,11 @@ namespace ChaosOverload.Items.Projectiles
             Projectile.DamageType = DamageClass.Magic;
             DrawOriginOffsetX = 0;
             DrawOriginOffsetY = 0;
-            Projectile.light = 1f;
+            Projectile.light = 0.5f;
         }
 
         public override void AI()
         {
-            ChangeLightColor();
-
             Player player = Main.player[Projectile.owner];
 
             // If the player is still channeling (holding the shoot button)
@@ -130,7 +129,7 @@ namespace ChaosOverload.Items.Projectiles
             Vector2 offset = new Vector2(-0f, -0f);  // Adjust the X offset (negative = left)
             Vector2 explosionPosition = Projectile.position + offset;
 
-            
+
 
 
             // Emit dust particles for visual effect
@@ -143,11 +142,30 @@ namespace ChaosOverload.Items.Projectiles
                 dust.velocity = Projectile.velocity * 2f;
             }
         }
-        private void ChangeLightColor()
+
+
+        public override void PostDraw(Color lightColor)
         {
-            // Set the light color to blue
-            Color lightColor = new Color(0, 0, 255); // Blue color
-            Lighting.AddLight(Projectile.Center, lightColor.ToVector3() * Projectile.light); // Apply light color
+            // Get the glow mask texture
+            Texture2D glowMask = ModContent.Request<Texture2D>("ChaosOverload/Items/Projectiles/Lightning_ProjectileGLOW").Value;
+
+            // Position and origin for centering
+            Vector2 drawPosition = Projectile.Center - Main.screenPosition;
+            Vector2 origin = new Vector2(glowMask.Width / 2, glowMask.Height / 2);
+
+            // Draw the glow mask with additive blending for a glowing effect
+            Main.spriteBatch.Draw(
+                glowMask,
+                drawPosition,
+                null,
+                Color.Aqua,
+                Projectile.rotation,
+                origin,
+                Projectile.scale,
+                SpriteEffects.None,
+                0f);
+
         }
+
     }
 }
