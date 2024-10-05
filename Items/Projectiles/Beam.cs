@@ -18,7 +18,7 @@ namespace ChaosOverload.Items.Projectiles
             Projectile.friendly = true;
             Projectile.hostile = false;
             Projectile.timeLeft = lifetime;
-            Projectile.penetrate = 999;
+            Projectile.penetrate = -1;
             
             Projectile.ignoreWater = true;
             Projectile.tileCollide = false;
