@@ -1,16 +1,8 @@
-﻿using Microsoft.Xna.Framework.Graphics;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Terraria.Audio;
+﻿using Terraria.Audio;
 using Terraria.ID;
 using Terraria.ModLoader;
 using Terraria;
 using Microsoft.Xna.Framework;
-using ChaosOverload.Items.Projectiles;
-using System.Drawing;
 
 namespace ChaosOverload.Items.Projectiles
 {
@@ -69,14 +61,7 @@ namespace ChaosOverload.Items.Projectiles
                 Projectile.damage = (int)damage;
 
 
-
-
-
-                int newSize = (int)(38 + chargeTime); // New size based on charge time
-                Projectile.Resize(newSize, newSize); // Resize both width and height to keep it circular
-
-
-
+                Projectile.scale = 1 + chargeTime * 0.01f;
             }
             else if (!player.channel && !isLaunched) // If the player releases the shoot button
             {
@@ -90,8 +75,6 @@ namespace ChaosOverload.Items.Projectiles
                 direction.Normalize();
                 float speed = 10f + chargeTime * 0.1f;
                 Projectile.velocity = direction * speed;
-
-                chargeTime = 0f;
             }
 
             // Set the rotation to match the projectile's velocity
@@ -99,6 +82,13 @@ namespace ChaosOverload.Items.Projectiles
             {
                 Projectile.rotation = Projectile.velocity.ToRotation();
             }
+        }
+
+        public override void ModifyDamageHitbox(ref Rectangle hitbox)
+        {
+            float multiplier = 1 + chargeTime * 0.005f;
+            float delta = 38 * multiplier - hitbox.Size().X;
+            hitbox.Inflate((int)delta, (int)delta);
         }
     }
 }
