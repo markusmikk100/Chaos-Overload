@@ -5,7 +5,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using ChaosOverload.Items.Projectiles;
 
-namespace ChaosOverload.Items.Weapons
+namespace ChaosOverload.Items.Weapons.Ranged
 {
     public class Lightning : ModItem
     {
@@ -52,7 +52,7 @@ namespace ChaosOverload.Items.Weapons
                 channelTime++; // Increment the time spent channeling
 
                 // Scale the mana cost based on channel time (e.g., increase cost faster the longer you hold)
-                int manaCost = 1 + (channelTime / 120); // Base 1 mana cost, increases by 1 every second (60 frames)
+                int manaCost = 1 + channelTime / 120; // Base 1 mana cost, increases by 1 every second (60 frames)
 
                 if (player.statMana >= manaCost) // Ensure the player has enough mana
                 {

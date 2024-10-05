@@ -3,6 +3,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Terraria;
 using Terraria.Audio;
 using Terraria.DataStructures;
+using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.ModLoader;
 
@@ -22,13 +23,11 @@ namespace ChaosOverload.Items.Projectiles
             Projectile.DamageType = DamageClass.Magic;
             DrawOriginOffsetX = 0;
             DrawOriginOffsetY = 0;
-            Projectile.light = 1f;
+            Projectile.light = 0.5f;
         }
 
         public override void AI()
         {
-            ChangeLightColor();
-
             Player player = Main.player[Projectile.owner];
 
             // If the player is still channeling (holding the shoot button)
@@ -72,13 +71,11 @@ namespace ChaosOverload.Items.Projectiles
         }
         private void EmitParticles()
         {
-
-
             Vector2 offset = new Vector2(-30, -6);  // Adjust the X offset (negative = left)
             Vector2 particlePosition = Projectile.position + offset;
 
             // Emit particles based on the Projectile's position
-            if (Main.rand.NextBool(1))  // Emit particles every frame (1 in 1 chance)
+            if (Main.rand.NextBool(1))  // Emit particles every frame (1 in 3 chance)
             {
                 // Create a dust particle
                 int dustIndex = Dust.NewDust(particlePosition, 190, 34, 226, 0f, 0f, 100, default, 0.5f);
@@ -95,7 +92,6 @@ namespace ChaosOverload.Items.Projectiles
         }
         private void EmitParticlesChase()
         {
-
             Vector2 offset = new Vector2(-30, -6);  // Adjust the X offset (negative = left)
             Vector2 particlePosition = Projectile.position + offset;
 
@@ -124,30 +120,44 @@ namespace ChaosOverload.Items.Projectiles
 
         private void Explode()
         {
-            // Play explosion sound
             SoundEngine.PlaySound(SoundID.DD2_ExplosiveTrapExplode, Projectile.position);
 
-            Vector2 offset = new Vector2(-0f, -0f);  // Adjust the X offset (negative = left)
+            Vector2 offset = new Vector2(-0f, -0f);
             Vector2 explosionPosition = Projectile.position + offset;
 
-            
-
-
-            // Emit dust particles for visual effect
             for (int i = 0; i < 40; i++)
             {
                 int dustIndex = Dust.NewDust(explosionPosition, 130, 22, 226, 0f, 0f, 100, default, 0.5f);
                 Dust dust = Main.dust[dustIndex];
-                dust.noGravity = true; // Make the dust float
-                dust.fadeIn = 0.2f;      // Fade time for the dust
+                dust.noGravity = true; 
+                dust.fadeIn = 0.2f; 
                 dust.velocity = Projectile.velocity * 2f;
             }
         }
-        private void ChangeLightColor()
+
+
+        public override void PostDraw(Color lightColor)
         {
-            // Set the light color to blue
-            Color lightColor = new Color(0, 0, 255); // Blue color
-            Lighting.AddLight(Projectile.Center, lightColor.ToVector3() * Projectile.light); // Apply light color
+            // Get the glow mask texture
+            Texture2D glowMask = ModContent.Request<Texture2D>("ChaosOverload/Items/Projectiles/Lightning_ProjectileGLOW").Value;
+
+            // Position and origin for centering
+            Vector2 drawPosition = Projectile.Center - Main.screenPosition;
+            Vector2 origin = new Vector2(glowMask.Width / 2, glowMask.Height / 2);
+
+            // Draw the glow mask with additive blending for a glowing effect
+            Main.spriteBatch.Draw(
+                glowMask,
+                drawPosition,
+                null,
+                Color.Aqua,
+                Projectile.rotation,
+                origin,
+                Projectile.scale,
+                SpriteEffects.None,
+                0f);
+
         }
+
     }
 }

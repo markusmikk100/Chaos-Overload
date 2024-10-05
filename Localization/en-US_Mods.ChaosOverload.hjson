@@ -13,9 +13,20 @@ Items: {
 		DisplayName: Beam Gun
 		Tooltip: ""
 	}
+
+	Lightning_ball: {
+		DisplayName: Lightning_ball
+		Tooltip: ""
+	}
+
+	Lightning_orb: {
+		DisplayName: Lightning_orb
+		Tooltip: ""
+	}
 }
 
 Projectiles: {
 	Lightning_Projectile.DisplayName: Lightning_ Projectile
 	Beam.DisplayName: Beam
+	Lightning_orb_Projectile.DisplayName: Lightning_orb_ Projectile
 }
