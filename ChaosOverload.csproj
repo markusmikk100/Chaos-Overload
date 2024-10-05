@@ -5,4 +5,7 @@
     <AssemblyName>ChaosOverload</AssemblyName>
     <LangVersion>latest</LangVersion>
   </PropertyGroup>
+  <ItemGroup>
+    <None Remove="Items\Projectiles\Lightning_orb_Projectile.png" />
+  </ItemGroup>
 </Project>

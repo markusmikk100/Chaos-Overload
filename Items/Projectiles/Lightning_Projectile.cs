@@ -71,13 +71,11 @@ namespace ChaosOverload.Items.Projectiles
         }
         private void EmitParticles()
         {
-
-
             Vector2 offset = new Vector2(-30, -6);  // Adjust the X offset (negative = left)
             Vector2 particlePosition = Projectile.position + offset;
 
             // Emit particles based on the Projectile's position
-            if (Main.rand.NextBool(1))  // Emit particles every frame (1 in 1 chance)
+            if (Main.rand.NextBool(1))  // Emit particles every frame (1 in 3 chance)
             {
                 // Create a dust particle
                 int dustIndex = Dust.NewDust(particlePosition, 190, 34, 226, 0f, 0f, 100, default, 0.5f);
@@ -94,7 +92,6 @@ namespace ChaosOverload.Items.Projectiles
         }
         private void EmitParticlesChase()
         {
-
             Vector2 offset = new Vector2(-30, -6);  // Adjust the X offset (negative = left)
             Vector2 particlePosition = Projectile.position + offset;
 
@@ -123,22 +120,17 @@ namespace ChaosOverload.Items.Projectiles
 
         private void Explode()
         {
-            // Play explosion sound
             SoundEngine.PlaySound(SoundID.DD2_ExplosiveTrapExplode, Projectile.position);
 
-            Vector2 offset = new Vector2(-0f, -0f);  // Adjust the X offset (negative = left)
+            Vector2 offset = new Vector2(-0f, -0f);
             Vector2 explosionPosition = Projectile.position + offset;
 
-
-
-
-            // Emit dust particles for visual effect
             for (int i = 0; i < 40; i++)
             {
                 int dustIndex = Dust.NewDust(explosionPosition, 130, 22, 226, 0f, 0f, 100, default, 0.5f);
                 Dust dust = Main.dust[dustIndex];
-                dust.noGravity = true; // Make the dust float
-                dust.fadeIn = 0.2f;      // Fade time for the dust
+                dust.noGravity = true; 
+                dust.fadeIn = 0.2f; 
                 dust.velocity = Projectile.velocity * 2f;
             }
         }
