@@ -18,18 +18,19 @@ namespace ChaosOverload.Items.Weapons.Ranged
         private int channelTime = 0;
         public override void SetStaticDefaults()
         {
-            //Tooltip.SetDefault("Zap me baby");
+            //DisplayName.SetDefault("Lightning Orb");  // Set the display name of the item
+            //Tooltip.SetDefault("Zap your enemies with a powerful lightning orb!");  // Set the tooltip
         }
 
         public override void SetDefaults()
         {
-            Item.damage = '?';
+            Item.damage = 1000;
             Item.DamageType = DamageClass.Magic;
             Item.mana = 0;
             Item.width = 1;
             Item.height = 1;
-            Item.useTime = 25;
-            Item.useAnimation = 25;
+            Item.useTime = 60;
+            Item.useAnimation = 60;
             Item.useStyle = ItemUseStyleID.HoldUp;
             Item.noMelee = true;
             Item.channel = true; // You can hold the weapon
@@ -65,46 +66,46 @@ namespace ChaosOverload.Items.Weapons.Ranged
                 drawColor, // The draw color
                 0f, // No rotation
                 origin, // Origin point
-                scale, // Scale of the texture
+                scale = 0.90f, // Scale of the texture
                 SpriteEffects.None, // No special sprite effects
                 0f // Layer depth
              );
             return false;// Return false to prevent the default item drawing
         }
 
-        //public override void HoldItem(Player player)
-        //{
-        //    if (player.channel)
-        //    {
-        //        channelTime++; // Increment the time spent channeling
+        public override void HoldItem(Player player)
+        {
+            if (player.channel)
+            {
+                channelTime++; // Increment the time spent channeling
 
-        //        // Scale the mana cost based on channel time (e.g., increase cost faster the longer you hold)
-        //        int manaCost = 1 + channelTime / 120; // Base 1 mana cost, increases by 1 every second (60 frames)
+                // Scale the mana cost based on channel time (e.g., increase cost faster the longer you hold)
+                int manaCost = 1/2 + channelTime / 120; // Base 1 mana cost, increases by 1 every second (60 frames)
 
-        //        if (player.statMana >= manaCost) // Ensure the player has enough mana
-        //        {
-        //            player.statMana -= manaCost; // Deduct scaled mana cost
+                if (player.statMana >= manaCost) // Ensure the player has enough mana
+                {
+                    player.statMana -= manaCost; // Deduct scaled mana cost
 
-        //            // Prevent negative mana
-        //            if (player.statMana < 0)
-        //            {
-        //                player.statMana = 0;
-        //            }
+                    // Prevent negative mana
+                    if (player.statMana < 0)
+                    {
+                        player.statMana = 0;
+                    }
 
-        //            // Reset mana regeneration delay
-        //            player.manaRegenDelay = 60; // Prevent mana regeneration during channeling
-        //        }
-        //        else
-        //        {
-        //            // If the player runs out of mana, stop the channeling
-        //            player.channel = false;
-        //        }
-        //    }
-        //    else
-        //    {
-        //        // Reset the channelTime when channeling ends
-        //        channelTime = 0;
-        //    }
-        //}
+                    // Reset mana regeneration delay
+                    player.manaRegenDelay = 60; // Prevent mana regeneration during channeling
+                }
+                else
+                {
+                    // If the player runs out of mana, stop the channeling
+                    player.channel = false;
+                }
+            }
+            else
+            {
+                // Reset the channelTime when channeling ends
+                channelTime = 0;
+            }
+        }
     }
 }

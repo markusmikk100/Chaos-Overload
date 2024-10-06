@@ -11,6 +11,7 @@ namespace ChaosOverload.Items.Projectiles
     {
         private bool isLaunched = false; // Track whether the projectile has been launched
         private float chargeTime = 0f; // Time the projectile has been charging
+        private int totalDamageDealt = 0;
         public override void SetDefaults()
         {
             Projectile.width = 38;
@@ -21,6 +22,7 @@ namespace ChaosOverload.Items.Projectiles
             DrawOriginOffsetX = 0;
             DrawOriginOffsetY = 0;
             Projectile.light = 1f;
+            Projectile.penetrate = -1;
 
             Main.projFrames[Projectile.type] = 4;
         }
@@ -28,7 +30,7 @@ namespace ChaosOverload.Items.Projectiles
         public override void AI()
         {
 
-            // Animate the projectile
+
             Projectile.frameCounter++; // Increment the frame counter every tick (1/60th of a second)
 
             // Change frame every 5 ticks (adjust to make animation faster/slower)
@@ -52,7 +54,9 @@ namespace ChaosOverload.Items.Projectiles
             {
                 chargeTime += 1f;
 
-                Projectile.position = player.Center + new Vector2(-18, -player.height - 35);
+                Projectile.position = player.Center + new Vector2(-18, -player.height - 45 - (chargeTime * 0.2f));
+
+
                 Projectile.velocity = Vector2.Zero;
 
                 SoundEngine.PlaySound(SoundID.Item75, Projectile.position);
@@ -61,7 +65,7 @@ namespace ChaosOverload.Items.Projectiles
                 Projectile.damage = (int)damage;
 
 
-                Projectile.scale = 1 + chargeTime * 0.01f;
+                Projectile.scale = 1 + chargeTime * 0.01f;      //SCALE
             }
             else if (!player.channel && !isLaunched) // If the player releases the shoot button
             {
@@ -73,7 +77,7 @@ namespace ChaosOverload.Items.Projectiles
 
 
                 direction.Normalize();
-                float speed = 10f + chargeTime * 0.1f;
+                float speed = 10f - chargeTime * 0.01f;
                 Projectile.velocity = direction * speed;
             }
 
@@ -84,13 +88,36 @@ namespace ChaosOverload.Items.Projectiles
             }
         }
 
-        public override void ModifyDamageHitbox(ref Rectangle hitbox)
+        public override void ModifyDamageHitbox(ref Rectangle hitbox)  //WEIRD SHIT THAT I WONT TOUCH
         {
             float multiplier = 1 + chargeTime * 0.005f;
             float delta = 38 * multiplier - hitbox.Size().X;
             hitbox.Inflate((int)delta, (int)delta);
         }
+
+        public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
+        {
+            totalDamageDealt += damageDone;
+
+            Main.NewText($"Projectile has dealt a total of {totalDamageDealt} and {chargeTime}.");
+
+
+            if (totalDamageDealt >= 1500)
+            {
+                Projectile.Kill();
+            }
+        }
+
+        public override void OnKill(int timeLeft)
+        {
+            explosion();
+        }
+        public void explosion()
+        {
+
+        }
     }
+
 }
 
 
