@@ -61,7 +61,7 @@ namespace ChaosOverload.Items.Projectiles
 
                 SoundEngine.PlaySound(SoundID.Item75, Projectile.position);
 
-                float damage = 100 + chargeTime * 5f;
+                float damage = chargeTime * 8f;
                 Projectile.damage = (int)damage;
 
 
@@ -95,14 +95,26 @@ namespace ChaosOverload.Items.Projectiles
             hitbox.Inflate((int)delta, (int)delta);
         }
 
+        //public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
+        //{
+        //    totalDamageDealt += damageDone;
+
+        //    Main.NewText($"Projectile has dealt a total of {totalDamageDealt} and {chargeTime}.");
+
+
+        //    if (totalDamageDealt >= 1500)
+        //    {
+        //        Projectile.Kill();
+        //    }
+        //}
+        
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
         {
-            totalDamageDealt += damageDone;
-
-            Main.NewText($"Projectile has dealt a total of {totalDamageDealt} and {chargeTime}.");
-
-
-            if (totalDamageDealt >= 1500)
+            if (target.life <= 0)  // Check if the NPC will be killed by the hit
+            {
+                return;
+            }
+            else
             {
                 Projectile.Kill();
             }
@@ -117,7 +129,4 @@ namespace ChaosOverload.Items.Projectiles
 
         }
     }
-
 }
-
-
