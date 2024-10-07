@@ -18,6 +18,8 @@ namespace ChaosOverload.Effects.Primitives
             device.SetRenderTarget(_target);
             device.Clear(Color.Transparent);
 
+            spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend);
+
             Matrix world = Matrix.CreateTranslation(new Vector3(-Main.screenPosition, 0));
             Matrix view = Main.GameViewMatrix.TransformationMatrix;
             var viewport = device.Viewport;
@@ -30,9 +32,6 @@ namespace ChaosOverload.Effects.Primitives
             device.Textures[0] = TextureAssets.MagicPixel.Value;
 
             int projectileType = ModContent.ProjectileType<Beam>();
-
-            spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend);
-
             for (int i = 0; i < Main.projectile.Length; i++)
             {
                 if (!Main.projectile[i].active) continue;
@@ -83,7 +82,7 @@ namespace ChaosOverload.Effects.Primitives
             if (beamRT.IsReady)
             {
                 Main.spriteBatch.Begin();
-                Main.spriteBatch.Draw(beamRT.GetTarget(), Main.LocalPlayer.Center - Main.screenPosition, Color.White);
+                Main.spriteBatch.Draw(beamRT.GetTarget(), Vector2.Zero, Color.White);
                 Main.spriteBatch.End();
             }
         }
