@@ -56,7 +56,6 @@ namespace ChaosOverload.Items.Projectiles
 
                 Projectile.position = player.Center + new Vector2(-18, -player.height - 45 - (chargeTime * 0.2f));
 
-
                 Projectile.velocity = Vector2.Zero;
 
                 SoundEngine.PlaySound(SoundID.Item75, Projectile.position);
