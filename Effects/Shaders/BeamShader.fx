@@ -1,4 +1,3 @@
-sampler2D TextureSampler : register(s0);
 float4x4 WorldViewProjection;
 
 struct VS_Input
@@ -23,7 +22,7 @@ VS_Output VS_Main(VS_Input input)
 
 float4 PS_Main(float2 coord: TEXCOORD0) : COLOR0
 {    
-    float4 color = float4(1, 1, 1, 1);
+    float4 color = float4(0.98, 0.98, 0.9, 1);
     return color;
 }
 
