@@ -1,34 +1,10 @@
 sampler uImage0 : register(s0);
 
-float3 uColor;
-float3 uSecondaryColor;
-float2 uScreenResolution;
-float2 uScreenPosition;
-float2 uTargetPosition;
-float2 uDirection;
-float uOpacity;
-float uTime;
-float uIntensity;
-float uProgress;
-float4 uShaderSpecificData;
-
-float progresses[10];
-float2 positions[10];
-float intensity[10];
-float numberOfPoints;
-
-float2 uImageSize1;
-float2 uImageSize2;
-float2 uImageSize3;
-float2 uImageOffset;
-float uSaturation;
-float4 uSourceRect;
-float2 uZoom;
-
-float4 PSMain(float4 unused : COLOR0, float2 coords : TEXCOORD0) : COLOR0
+float4 PSMain(float2 coords : TEXCOORD0) : COLOR0
 {
     float4 color = tex2D(uImage0, coords);
-    color.rgb *= 0;
+    color.r += 0.2;
+    color.gb -= 0.1;
     return color;
 }
 
