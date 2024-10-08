@@ -3,6 +3,8 @@ using Terraria.ID;
 using Terraria.ModLoader;
 using Terraria;
 using Microsoft.Xna.Framework;
+using System;
+using Microsoft.Xna.Framework.Graphics;
 
 namespace ChaosOverload.Items.Projectiles
 {
@@ -11,7 +13,7 @@ namespace ChaosOverload.Items.Projectiles
     {
         private bool isLaunched = false; // Track whether the projectile has been launched
         private float chargeTime = 0f; // Time the projectile has been charging
-        private int totalDamageDealt = 0;
+        //private int totalDamageDealt = 0;
         public override void SetDefaults()
         {
             Projectile.width = 38;
@@ -23,8 +25,6 @@ namespace ChaosOverload.Items.Projectiles
             DrawOriginOffsetY = 0;
             Projectile.light = 1f;
             Projectile.penetrate = -1;
-
-            Main.projFrames[Projectile.type] = 4;
         }
 
         public override void AI()
@@ -60,11 +60,11 @@ namespace ChaosOverload.Items.Projectiles
 
                 SoundEngine.PlaySound(SoundID.Item75, Projectile.position);
 
-                float damage = chargeTime * 8f;
+                float damage = chargeTime * 8f;                                                              //DMG
                 Projectile.damage = (int)damage;
 
 
-                Projectile.scale = 1 + chargeTime * 0.01f;      //SCALE
+                Projectile.scale = 1 + chargeTime * 0.01f;                                                   //SCALE
             }
             else if (!player.channel && !isLaunched) // If the player releases the shoot button
             {
@@ -76,7 +76,10 @@ namespace ChaosOverload.Items.Projectiles
 
 
                 direction.Normalize();
-                float speed = 10f - chargeTime * 0.01f;
+
+
+                float speed = 15f - chargeTime * 0.01f; 
+                speed = Math.Max(speed, 1f); 
                 Projectile.velocity = direction * speed;
             }
 
@@ -110,7 +113,7 @@ namespace ChaosOverload.Items.Projectiles
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
         {
             if (target.life <= 0)  // Check if the NPC will be killed by the hit
-            {
+            {   
                 return;
             }
             else
@@ -123,9 +126,43 @@ namespace ChaosOverload.Items.Projectiles
         {
             explosion();
         }
+
         public void explosion()
         {
 
+        }
+
+            public override bool PreDraw(ref Color lightColor)
+        {
+            // Check the charge time to determine which texture to draw
+            Texture2D texture;
+
+            if (chargeTime >= 120f)
+            {
+                texture = ModContent.Request<Texture2D>("ChaosOverload/Items/Projectiles/Lightning_Projectile").Value; // Custom charged texture
+            }
+            else
+            {
+                texture = ModContent.Request<Texture2D>("ChaosOverload/Items/Projectiles/Lightning_orb_Projectile").Value; // Default texture
+            }
+
+            Vector2 origin = new Vector2(texture.Width / 2, texture.Height / 2);
+
+            // Draw the texture
+            Main.spriteBatch.Draw(
+
+                texture,
+                Projectile.Center - Main.screenPosition, // Position
+                null,
+                lightColor,
+                Projectile.rotation,
+                origin,
+                Projectile.scale,
+                SpriteEffects.None,
+                0f
+            );
+
+            return false; // Return false to prevent the default drawing behavior
         }
     }
 }
