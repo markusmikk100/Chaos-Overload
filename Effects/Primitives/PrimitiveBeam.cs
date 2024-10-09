@@ -14,7 +14,9 @@ namespace ChaosOverload.Effects.Primitives
     {
         protected override void HandleUseReqest(GraphicsDevice device, SpriteBatch spriteBatch)
         {
-            PrepareARenderTarget_AndListenToEvents(ref _target, device, 2560, 1600, RenderTargetUsage.PlatformContents);
+            var viewport = device.Viewport;
+
+            PrepareARenderTarget_AndListenToEvents(ref _target, device, viewport.Width, viewport.Height, RenderTargetUsage.PlatformContents);
 
             RenderTargetBinding[] oldTargets = device.GetRenderTargets();
             device.SetRenderTarget(_target);
@@ -24,7 +26,6 @@ namespace ChaosOverload.Effects.Primitives
 
             Matrix world = Matrix.CreateTranslation(new Vector3(-Main.screenPosition, 0));
             Matrix view = Main.GameViewMatrix.TransformationMatrix;
-            var viewport = device.Viewport;
             Matrix projection = Matrix.CreateOrthographicOffCenter(0, viewport.Width, viewport.Height, 0, -1, 10);
 
             PrimitiveBeam.beamEffect.Parameters["WorldViewProjection"].SetValue(world * view * projection);
@@ -63,32 +64,63 @@ namespace ChaosOverload.Effects.Primitives
         }
     }
 
+    class BloomRT : ARenderTargetContentByRequest
+    {
+        protected override void HandleUseReqest(GraphicsDevice device, SpriteBatch spriteBatch)
+        {
+            PrimitiveBeam.beamRT.Request();
+
+            if (PrimitiveBeam.beamRT.IsReady)
+            {
+                var viewport = device.Viewport;
+                PrepareARenderTarget_AndListenToEvents(ref _target, device, viewport.Width, viewport.Height, RenderTargetUsage.PlatformContents);
+
+                RenderTargetBinding[] oldTargets = device.GetRenderTargets();
+                device.SetRenderTarget(_target);
+                device.Clear(Color.Transparent);
+
+                spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend);
+
+                PrimitiveBeam.beamShaderEffect.CurrentTechnique.Passes[0].Apply();
+                spriteBatch.Draw(PrimitiveBeam.beamRT.GetTarget(), Vector2.Zero, Color.White);
+             
+                spriteBatch.End();
+                device.SetRenderTargets(oldTargets);
+                _wasPrepared = true;
+            }
+        }
+    }
+
     class PrimitiveBeam : ModSystem
     {
         public static Effect beamEffect;
-        private static BeamRT beamRT;
+        public static Effect beamShaderEffect;
+
+        public static BeamRT beamRT;
+        public static BloomRT bloomRT;
 
         public override void Load()
         {
             Main.ContentThatNeedsRenderTargets.Add(beamRT = new BeamRT());
+            Main.ContentThatNeedsRenderTargets.Add(bloomRT = new BloomRT());
+
             beamEffect = ModContent.Request<Effect>("ChaosOverload/Effects/Shaders/BeamShader", AssetRequestMode.ImmediateLoad).Value;
 
             Asset<Effect> bloom = ChaosOverload.Instance.Assets.Request<Effect>("Effects/Shaders/BeamScreenShader", AssetRequestMode.ImmediateLoad);
+            beamShaderEffect = bloom.Value;
+
             Filters.Scene["Bloom"] = new Filter(new ScreenShaderData(bloom, "P0"), EffectPriority.High);
             Filters.Scene["Bloom"].Load();
         }
 
         public override void PostDrawTiles()
         {
-            beamRT.Request();
+            bloomRT.Request();
 
-            if (beamRT.IsReady)
+            if (bloomRT.IsReady)
             {
                 Main.spriteBatch.Begin();
-
-                Filters.Scene.Activate("Bloom");
-
-                Main.spriteBatch.Draw(beamRT.GetTarget(), Vector2.Zero, Color.White);
+                Main.spriteBatch.Draw(bloomRT.GetTarget(), Vector2.Zero, Color.White);
                 Main.spriteBatch.End();
             }
         }
@@ -99,9 +131,13 @@ namespace ChaosOverload.Effects.Primitives
             {
                 beamEffect?.Dispose();
                 beamEffect = null;
+
+                beamShaderEffect?.Dispose();
+                beamShaderEffect = null;
             });
 
             Main.ContentThatNeedsRenderTargets.Remove(beamRT);
+            Main.ContentThatNeedsRenderTargets.Remove(bloomRT);
         }
     }
 }
