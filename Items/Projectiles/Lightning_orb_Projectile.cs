@@ -38,19 +38,34 @@ namespace ChaosOverload.Items.Projectiles
             // Check the charge time to determine which texture to draw
             Texture2D texture;
 
-            if (chargeTime < 300)
+            if (chargeTime < 60)
             {
-                texture = ModContent.Request<Texture2D>("ChaosOverload/Items/Projectiles/Lightning_orb_Projectile").Value; // Default texture
+                texture = ModContent.Request<Texture2D>("ChaosOverload/Items/Projectiles/S1").Value; // Default texture
             }
 
-            else if (chargeTime < 304)
+            else if (chargeTime < 260)
             {
-                texture = ModContent.Request<Texture2D>("ChaosOverload/Items/Projectiles/stars").Value; // Custom charged texture
+                texture = ModContent.Request<Texture2D>("ChaosOverload/Items/Projectiles/Lightning_orb_Projectile").Value; // Custom charged texture
+            }
+
+            else if (chargeTime < 320)
+            {
+                texture = ModContent.Request<Texture2D>("ChaosOverload/Items/Projectiles/S2").Value; // Custom charged texture
+            }
+
+            else if (chargeTime < 520)
+            {
+                texture = ModContent.Request<Texture2D>("ChaosOverload/Items/Projectiles/LP2").Value; // Custom charged texture
+            }
+
+            else if (chargeTime < 580)
+            {
+                texture = ModContent.Request<Texture2D>("ChaosOverload/Items/Projectiles/S3").Value; // Custom charged texture
             }
 
             else
             {
-                texture = ModContent.Request<Texture2D>("ChaosOverload/Items/Projectiles/Lightning_orb_projectile2").Value; // Custom charged texture
+                texture = ModContent.Request<Texture2D>("ChaosOverload/Items/Projectiles/LP3").Value; // Custom charged texture
             }
 
             // Assume your texture has multiple frames stacked vertically
@@ -170,52 +185,51 @@ namespace ChaosOverload.Items.Projectiles
 
         public override void OnKill(int timeLeft)
         {
-            Explode();
+            //Explode();
             PunchCameraModifier modifier = new PunchCameraModifier(Projectile.Center, (Main.rand.NextFloat() * ((float)Math.PI * 2f)).ToRotationVector2(), (chargeTime * 0.075f), 6f, 20, 1000f, FullName);
             Main.instance.CameraModifiers.Add(modifier); //SCREEN SHAKEEE WOO
         }
 
-        private void Explode()
-        {
-            SoundEngine.PlaySound(SoundID.DD2_ExplosiveTrapExplode, Projectile.position);
+        //private void Explode()
+        //{
+        //    SoundEngine.PlaySound(SoundID.DD2_ExplosiveTrapExplode, Projectile.position);
 
-            for (int i = 0; i < 100; i++)
-            {
+        //    for (int i = 0; i < 100; i++)
+        //    {
 
-                float angle = MathHelper.TwoPi * i / 100;
-                float xOffset = 100 * (float)Math.Cos(angle);
+        //        float angle = MathHelper.TwoPi * i / 100;
+        //        float xOffset = 100 * (float)Math.Cos(angle);
   
 
 
-                int dustIndex = Dust.NewDust(Projectile.position, 0, 0, 135, 0f, 0f, 100, default, 4f);
-                Dust dust = Main.dust[dustIndex];
-                dust.noGravity = true;
+        //        int dustIndex = Dust.NewDust(Projectile.position, 0, 0, 135, 0f, 0f, 100, default, 4f);
+        //        Dust dust = Main.dust[dustIndex];
+        //        dust.noGravity = true;
                 
 
-                // Optionally, give the dust some velocity for a more dynamic effect
-                dust.velocity = new Vector2(xOffset); // Adjust velocity multiplier as needed
-            }
+        //        // Optionally, give the dust some velocity for a more dynamic effect
+        //        dust.velocity = new Vector2(xOffset); // Adjust velocity multiplier as needed
+        //    }
 
-            float radius = 1000 * (1 + chargeTime * 0.005f);
+        //    float radius = 1000 * (1 + chargeTime * 0.005f);
 
-            for (int i = 0; i < 100; i++)
-            {
+        //    for (int i = 0; i < 100; i++)
+        //    {
 
-                float angle = MathHelper.TwoPi * i / 100;
+        //        float angle = MathHelper.TwoPi * i / 100;
 
-                float xOffset = radius * (float)Math.Cos(angle);
-                float yOffset = radius * (float)Math.Sin(angle);
+        //        float xOffset = radius * (float)Math.Cos(angle);
+        //        float yOffset = radius * (float)Math.Sin(angle);
 
 
-                int dustIndex = Dust.NewDust(Projectile.position, 0, 0, 226, 0f, 0f, 100, default, 2f);
-                Dust dust = Main.dust[dustIndex];
-                dust.noGravity = true;
+        //        int dustIndex = Dust.NewDust(Projectile.position, 0, 0, 226, 0f, 0f, 100, default, 2f);
+        //        Dust dust = Main.dust[dustIndex];
+        //        dust.noGravity = true;
 
-                // Optionally, give the dust some velocity for a more dynamic effect
-                dust.velocity = new Vector2(xOffset * 0.1f, yOffset * 0.1f); // Adjust velocity multiplier as needed
-            }
-        }
-
+        //        // Optionally, give the dust some velocity for a more dynamic effect
+        //        dust.velocity = new Vector2(xOffset * 0.1f, yOffset * 0.1f); // Adjust velocity multiplier as needed
+        //    }
+        //}
     }
 }
     

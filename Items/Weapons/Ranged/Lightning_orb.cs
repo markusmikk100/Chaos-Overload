@@ -66,7 +66,7 @@ namespace ChaosOverload.Items.Weapons.Ranged
                 drawColor, // The draw color
                 0f, // No rotation
                 origin, // Origin point
-                scale = 0.90f, // Scale of the texture
+                scale = 0.75f, // Scale of the texture
                 SpriteEffects.None, // No special sprite effects
                 0f // Layer depth
              );
@@ -86,11 +86,7 @@ namespace ChaosOverload.Items.Weapons.Ranged
                 {
                     player.statMana -= manaCost; // Deduct scaled mana cost
 
-                    // Prevent negative mana
-                    if (player.statMana < 0)
-                    {
-                        player.statMana = 0;
-                    }
+
 
                     // Reset mana regeneration delay
                     player.manaRegenDelay = 60; // Prevent mana regeneration during channeling
