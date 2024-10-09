@@ -6,6 +6,7 @@
     <LangVersion>latest</LangVersion>
   </PropertyGroup>
   <ItemGroup>
+    <None Remove="effects\shaders\Shockwave.fx" />
     <None Remove="Items\Projectiles\Lightning_orb_Projectile.png" />
   </ItemGroup>
 </Project>
