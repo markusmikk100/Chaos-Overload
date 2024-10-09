@@ -86,7 +86,11 @@ namespace ChaosOverload.Items.Weapons.Ranged
                 {
                     player.statMana -= manaCost; // Deduct scaled mana cost
 
-
+                    // Prevent negative mana
+                    if (player.statMana < 0)
+                    {
+                        player.statMana = 0;
+                    }
 
                     // Reset mana regeneration delay
                     player.manaRegenDelay = 60; // Prevent mana regeneration during channeling
