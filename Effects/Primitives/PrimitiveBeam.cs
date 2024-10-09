@@ -86,7 +86,7 @@ namespace ChaosOverload.Effects.Primitives
             {
                 Main.spriteBatch.Begin();
 
-                Filters.Scene.Activate("Bloom");
+             //   Filters.Scene.Activate("Bloom");
 
                 Main.spriteBatch.Draw(beamRT.GetTarget(), Vector2.Zero, Color.White);
                 Main.spriteBatch.End();
