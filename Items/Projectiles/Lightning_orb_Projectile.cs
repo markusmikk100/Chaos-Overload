@@ -15,7 +15,7 @@ namespace ChaosOverload.Items.Projectiles
 
     internal class Lightning_orb_Projectile : ModProjectile
     {
-        private bool isLaunched = false; 
+        private bool isLaunched = false;
         private float chargeTime = 0f;
 
 
@@ -24,13 +24,13 @@ namespace ChaosOverload.Items.Projectiles
             Projectile.width = 38;
             Projectile.height = 38;
             Projectile.friendly = true;
-            Projectile.tileCollide = true;
+            Projectile.tileCollide = false;
             Projectile.DamageType = DamageClass.Magic;
             DrawOriginOffsetX = 0;
             DrawOriginOffsetY = 0;
             Projectile.light = 1f;
             Projectile.penetrate = -1;
-            Main.projFrames[Projectile.type] = 4; 
+            Main.projFrames[Projectile.type] = 4;
         }
 
         public override bool PreDraw(ref Color lightColor)
@@ -41,31 +41,43 @@ namespace ChaosOverload.Items.Projectiles
             if (chargeTime < 60)
             {
                 texture = ModContent.Request<Texture2D>("ChaosOverload/Items/Projectiles/S1").Value; // Default texture
+
+                PullNearbyEnemies1();
             }
 
             else if (chargeTime < 260)
             {
                 texture = ModContent.Request<Texture2D>("ChaosOverload/Items/Projectiles/Lightning_orb_Projectile").Value; // Custom charged texture
+
+                PullNearbyEnemies1();
             }
 
             else if (chargeTime < 320)
             {
                 texture = ModContent.Request<Texture2D>("ChaosOverload/Items/Projectiles/S2").Value; // Custom charged texture
+
+                PullNearbyEnemies1();
             }
 
             else if (chargeTime < 520)
             {
                 texture = ModContent.Request<Texture2D>("ChaosOverload/Items/Projectiles/LP2").Value; // Custom charged texture
+
+                PullNearbyEnemies1();
             }
 
             else if (chargeTime < 580)
             {
                 texture = ModContent.Request<Texture2D>("ChaosOverload/Items/Projectiles/S3").Value; // Custom charged texture
+
+                PullNearbyEnemies1();
             }
 
             else
             {
                 texture = ModContent.Request<Texture2D>("ChaosOverload/Items/Projectiles/LP3").Value; // Custom charged texture
+
+                PullNearbyEnemies1();
             }
 
             // Assume your texture has multiple frames stacked vertically
@@ -118,6 +130,36 @@ namespace ChaosOverload.Items.Projectiles
             // If the player is still channeling (holding the shoot button)
             if (player.channel && !isLaunched)
             {
+                if (chargeTime < 60)
+                {
+                    charge();
+                }
+
+                else if (chargeTime < 260)
+                {
+                    charge();
+                }
+
+                else if (chargeTime < 320)
+                {
+                    charge2();
+                }
+
+                else if (chargeTime < 520)
+                {
+                    charge2();
+                }
+
+                else if (chargeTime < 580)
+                {
+                    charge3();
+                }
+
+                else
+                {
+                    charge3();
+                }
+
                 chargeTime += 1f;
 
                 Projectile.position = player.Center + new Vector2(-18, -player.height - 45 - (chargeTime * 0.2f));
@@ -135,6 +177,8 @@ namespace ChaosOverload.Items.Projectiles
             else if (!player.channel && !isLaunched) // If the player releases the shoot button
             {
                 isLaunched = true;
+
+                Projectile.tileCollide = true;
 
                 // Calculate the direction towards the mouse
                 Vector2 mousePosition = Main.MouseWorld;
@@ -170,11 +214,11 @@ namespace ChaosOverload.Items.Projectiles
         //        Projectile.Kill();
         //    }
         //}
-        
+
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
         {
             if (target.life <= 0)  // Check if the NPC will be killed by the hit
-            {   
+            {
                 return;
             }
             else
@@ -185,51 +229,168 @@ namespace ChaosOverload.Items.Projectiles
 
         public override void OnKill(int timeLeft)
         {
-            //Explode();
-            PunchCameraModifier modifier = new PunchCameraModifier(Projectile.Center, (Main.rand.NextFloat() * ((float)Math.PI * 2f)).ToRotationVector2(), (chargeTime * 0.075f), 6f, 20, 1000f, FullName);
+            Explode();
+            PunchCameraModifier modifier = new PunchCameraModifier(Projectile.Center, (Main.rand.NextFloat() * ((float)Math.PI * 2f)).ToRotationVector2(), (chargeTime * 0.075f), 6f, 20, -1, FullName);
             Main.instance.CameraModifiers.Add(modifier); //SCREEN SHAKEEE WOO
         }
 
-        //private void Explode()
-        //{
-        //    SoundEngine.PlaySound(SoundID.DD2_ExplosiveTrapExplode, Projectile.position);
+        private void Explode()
+        {
+            SoundEngine.PlaySound(SoundID.DD2_ExplosiveTrapExplode, Projectile.position);
 
-        //    for (int i = 0; i < 100; i++)
-        //    {
+            for (int i = 0; i < 100; i++)
+            {
 
-        //        float angle = MathHelper.TwoPi * i / 100;
-        //        float xOffset = 100 * (float)Math.Cos(angle);
-  
-
-
-        //        int dustIndex = Dust.NewDust(Projectile.position, 0, 0, 135, 0f, 0f, 100, default, 4f);
-        //        Dust dust = Main.dust[dustIndex];
-        //        dust.noGravity = true;
-                
-
-        //        // Optionally, give the dust some velocity for a more dynamic effect
-        //        dust.velocity = new Vector2(xOffset); // Adjust velocity multiplier as needed
-        //    }
-
-        //    float radius = 1000 * (1 + chargeTime * 0.005f);
-
-        //    for (int i = 0; i < 100; i++)
-        //    {
-
-        //        float angle = MathHelper.TwoPi * i / 100;
-
-        //        float xOffset = radius * (float)Math.Cos(angle);
-        //        float yOffset = radius * (float)Math.Sin(angle);
+                float angle = MathHelper.TwoPi * i / 100;
+                float xOffset = 100 * (float)Math.Cos(angle);
 
 
-        //        int dustIndex = Dust.NewDust(Projectile.position, 0, 0, 226, 0f, 0f, 100, default, 2f);
-        //        Dust dust = Main.dust[dustIndex];
-        //        dust.noGravity = true;
 
-        //        // Optionally, give the dust some velocity for a more dynamic effect
-        //        dust.velocity = new Vector2(xOffset * 0.1f, yOffset * 0.1f); // Adjust velocity multiplier as needed
-        //    }
-        //}
+                int dustIndex = Dust.NewDust(Projectile.position, 0, 0, 135, 0f, 0f, 100, default, 4f);
+                Dust dust = Main.dust[dustIndex];
+                dust.noGravity = true;
+
+
+                // Optionally, give the dust some velocity for a more dynamic effect
+                dust.velocity = new Vector2(xOffset); // Adjust velocity multiplier as needed
+            }
+
+            for (int i = 0; i < 100; i++)
+            {
+
+                float angle = MathHelper.TwoPi * i / 100;
+                float xOffset = 100 * (float)Math.Cos(angle);
+
+
+
+                int dustIndex = Dust.NewDust(Projectile.position, 0, 0, 135, 0f, 0f, 100, default, 4f);
+                Dust dust = Main.dust[dustIndex];
+                dust.noGravity = true;
+
+
+                // Optionally, give the dust some velocity for a more dynamic effect
+                dust.velocity = new Vector2(-xOffset); // Adjust velocity multiplier as needed
+            }
+
+            float radius = 1000 * (1 + chargeTime * 0.005f);
+
+            for (int i = 0; i < 100; i++)
+            {
+
+                float angle = MathHelper.TwoPi * i / 100;
+
+                float xOffset = radius * (float)Math.Cos(angle);
+                float yOffset = radius * (float)Math.Sin(angle);
+
+
+                int dustIndex = Dust.NewDust(Projectile.position, 0, 0, 226, 0f, 0f, 100, default, 2f);
+                Dust dust = Main.dust[dustIndex];
+                dust.noGravity = true;
+
+                // Optionally, give the dust some velocity for a more dynamic effect
+                dust.velocity = new Vector2(xOffset * 0.1f, yOffset * 0.1f); // Adjust velocity multiplier as needed
+            }
+        }
+
+        private void charge()
+        {
+            SoundEngine.PlaySound(SoundID.DD2_ExplosiveTrapExplode, Projectile.position);
+
+            Player player = Main.player[Projectile.owner];
+
+            Vector2 offset = new Vector2(1000, 800);
+            Vector2 pos = player.Center - offset;
+
+            for (int i = 0; i < 10; i++)
+            {
+
+                int dustIndex = Dust.NewDust(pos, 2000, 1600, 135, 0f, 0f, 100, default, 2f);
+                Dust dust = Main.dust[dustIndex];
+                dust.noGravity = true;
+                dust.noLight = true;
+
+                Vector2 directionToCenter = Projectile.Center - dust.position;
+                directionToCenter.Normalize();  // Normalize to get direction only
+                dust.velocity += directionToCenter * 5f + Projectile.velocity * 15f;
+            }
+        }
+        private void charge2()
+        {
+            SoundEngine.PlaySound(SoundID.DD2_ExplosiveTrapExplode, Projectile.position);
+
+            Player player = Main.player[Projectile.owner];
+
+            Vector2 offset = new Vector2(1000, 800);
+            Vector2 pos = player.Center - offset;
+
+            for (int i = 0; i < 10; i++)
+            {
+
+                int dustIndex = Dust.NewDust(pos, 2000, 1600, 127, 0f, 0f, 100, default, 3f);
+                Dust dust = Main.dust[dustIndex];
+                dust.noGravity = true;
+                dust.noLight = true;
+
+                Vector2 directionToCenter = Projectile.Center - dust.position;
+                directionToCenter.Normalize();  // Normalize to get direction only
+                dust.velocity += directionToCenter * 5f + Projectile.velocity * 15f;
+            }
+        }
+        private void charge3()
+        {
+            SoundEngine.PlaySound(SoundID.DD2_ExplosiveTrapExplode, Projectile.position);
+
+            Player player = Main.player[Projectile.owner];
+
+            Vector2 offset = new Vector2(1000, 800);
+            Vector2 pos = player.Center - offset;
+
+            for (int i = 0; i < 10; i++)
+            {
+
+                int dustIndex = Dust.NewDust(pos, 2000, 1600, 181, 0f, 0f, 100, default, 1f);
+                Dust dust = Main.dust[dustIndex];
+                dust.noGravity = true;
+                dust.noLight = true;
+
+                Vector2 directionToCenter = Projectile.Center - dust.position;
+                directionToCenter.Normalize();  // Normalize to get direction only
+                dust.velocity += directionToCenter * 5f + Projectile.velocity * 15f;
+            }
+        }
+
+        private void PullNearbyEnemies1()  //GLITCH DUMMYS
+        {
+            float pullRadius = 100f + chargeTime*0.3f; // Radius around the projectile to pull enemies
+            float pullStrength = 2f; // Adjust the strength of the pulling force
+
+            for (int i = 0; i < Main.maxNPCs; i++)
+            {
+                NPC npc = Main.npc[i];
+
+                if (npc.active && !npc.friendly && !npc.dontTakeDamage) // Only pull enemies
+                {
+                    float distanceToProjectile = Vector2.Distance(npc.Center, Projectile.Center);
+
+                    if (distanceToProjectile < pullRadius)
+                    {
+                        Vector2 directionToProjectile = Projectile.Center - npc.Center;
+                        directionToProjectile.Normalize();
+
+                        // Apply pulling force
+                        float pullForce = (pullRadius - distanceToProjectile) / pullRadius * pullStrength;
+                        npc.velocity += directionToProjectile * pullForce;
+
+                        // Optionally, reduce the NPC's speed if it's being pulled too fast
+                        if (npc.velocity.Length() > 10f)
+                        {
+                            npc.velocity *= 0.9f; // Slow down the NPC if it's too fast
+                        }
+                    }
+                }
+            }
+        }
+
     }
 }
     
