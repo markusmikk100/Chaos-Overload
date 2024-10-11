@@ -8,5 +8,6 @@
   <ItemGroup>
     <None Remove="effects\shaders\Shockwave.fx" />
     <None Remove="Items\Projectiles\Lightning_orb_Projectile.png" />
+    <None Remove="Items\Projectiles\Shockwave_Projectile.png" />
   </ItemGroup>
 </Project>

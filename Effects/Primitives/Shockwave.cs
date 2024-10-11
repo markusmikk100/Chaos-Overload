@@ -14,9 +14,8 @@ namespace ChaosOverload.Effects.Primitives
         {
             if (Main.netMode != NetmodeID.Server)
             {
-                Asset<Effect> screenEffect = ModContent.Request<Effect>("ChaosOverload/Effects/Shaders/ShockwaveEffect");
-
-                Filters.Scene["Shockwave"] = new Filter(new ScreenShaderData(screenEffect, "Shockwave"), EffectPriority.VeryHigh);
+                Asset<Effect> Shockwave = ChaosOverload.Instance.Assets.Request<Effect>("Effects/Shaders/ShockwaveEffect", AssetRequestMode.ImmediateLoad);
+                Filters.Scene["Shockwave"] = new Filter(new ScreenShaderData(Shockwave, "Shockwave"), EffectPriority.High);
                 Filters.Scene["Shockwave"].Load();
             }
         }

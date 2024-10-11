@@ -19,15 +19,6 @@ namespace ChaosOverload.Items.Projectiles
         private bool isLaunched = false;
         private float chargeTime = 0f;
 
-
-        private int rippleCount = 3;
-        private int rippleSize = 15;
-        private int rippleSpeed = 15;
-        private float distortStrength = 100f;
-
-
-
-
         public override void SetDefaults()
         {
             Projectile.width = 38;
@@ -211,19 +202,6 @@ namespace ChaosOverload.Items.Projectiles
             hitbox.Inflate((int)delta, (int)delta);
         }
 
-        //public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
-        //{
-        //    totalDamageDealt += damageDone;
-
-        //    Main.NewText($"Projectile has dealt a total of {totalDamageDealt} and {chargeTime}.");
-
-
-        //    if (totalDamageDealt >= 1500)
-        //    {
-        //        Projectile.Kill();
-        //    }
-        //}
-
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
         {
             if (target.life <= 0)  // Check if the NPC will be killed by the hit
@@ -238,10 +216,21 @@ namespace ChaosOverload.Items.Projectiles
 
         public override void OnKill(int timeLeft)
         {
-            ActivateShockwave();
             Explode();
             PunchCameraModifier modifier = new PunchCameraModifier(Projectile.Center, (Main.rand.NextFloat() * ((float)Math.PI * 2f)).ToRotationVector2(), (chargeTime * 0.075f), 6f, 20, -1, FullName);
             Main.instance.CameraModifiers.Add(modifier); //SCREEN SHAKEEE WOO
+
+            // Spawn the new projectile
+            Projectile.NewProjectile(
+                Projectile.GetSource_FromThis(), // Source of the new projectile
+                Projectile.Center,                                       // Spawn position
+                new Vector2(0,0),                                           // Velocity of the new projectile
+                ModContent.ProjectileType<Shockwave_Projectile>(),   // Type of projectile to spawn (customize this)
+                Projectile.damage,                                       // Damage of the new projectile
+                Projectile.knockBack,                                    // Knockback for the new projectile
+                Projectile.owner,                 // Owner of the projectile
+                chargeTime
+            );
         }
 
         private void Explode()
@@ -400,26 +389,6 @@ namespace ChaosOverload.Items.Projectiles
                 }
             }
         }
-
-        private void ActivateShockwave()
-        {
-            if (Main.netMode != NetmodeID.Server && !Filters.Scene["Shockwave"].IsActive())
-            {
-                Filters.Scene.Activate("Shockwave", Projectile.Center)
-                    .GetShader()
-                    .UseColor(rippleCount, rippleSize, rippleSpeed)
-                    .UseTargetPosition(Projectile.Center);
-            }
-
-            if (Main.netMode != NetmodeID.Server && Filters.Scene["Shockwave"].IsActive())
-            {
-                float progress = (180f - Projectile.timeLeft) / 60f; // Progress based on time left
-                Filters.Scene["Shockwave"].GetShader()
-                    .UseProgress(progress)
-                    .UseOpacity(distortStrength * (1 - progress / 3f));
-            }
-        }
-
     }
 }
     

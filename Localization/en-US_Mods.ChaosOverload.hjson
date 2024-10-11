@@ -29,4 +29,5 @@ Projectiles: {
 	Lightning_Projectile.DisplayName: Lightning_ Projectile
 	Beam.DisplayName: Beam
 	Lightning_orb_Projectile.DisplayName: Lightning_orb_ Projectile
+	Shockwave_Projectile.DisplayName: Shockwave_ Projectile
 }
