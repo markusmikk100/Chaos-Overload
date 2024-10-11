@@ -4,8 +4,6 @@ using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
 using Terraria;
 using Terraria.GameContent;
-using Terraria.Graphics.Effects;
-using Terraria.Graphics.Shaders;
 using Terraria.ModLoader;
 
 namespace ChaosOverload.Effects.Primitives
@@ -43,10 +41,11 @@ namespace ChaosOverload.Effects.Primitives
                 Vector2 center = Main.projectile[i].Center;
                 float rotation = Main.projectile[i].rotation;
 
-                Vector2 v0 = new(0, -10);
-                Vector2 v1 = new(0, 10);
-                Vector2 v2 = new(2500, -10);
-                Vector2 v3 = new(2500, 10);
+                float beamHeight = 8;
+                Vector2 v0 = new(0, -beamHeight);
+                Vector2 v1 = new(0, beamHeight);
+                Vector2 v2 = new(2500, -beamHeight);
+                Vector2 v3 = new(2500, beamHeight);
 
                 VertexPositionColorTexture[] vertices = [
                     new(new Vector3(center + v0.RotatedBy(rotation), 0f), Color.White, new(0, 0)),
@@ -81,6 +80,7 @@ namespace ChaosOverload.Effects.Primitives
 
                 spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend);
 
+                PrimitiveBeam.beamShaderEffect.Parameters["viewportSize"].SetValue(new Vector2(viewport.Width, viewport.Height));
                 PrimitiveBeam.beamShaderEffect.CurrentTechnique.Passes[0].Apply();
                 spriteBatch.Draw(PrimitiveBeam.beamRT.GetTarget(), Vector2.Zero, Color.White);
              
@@ -105,12 +105,7 @@ namespace ChaosOverload.Effects.Primitives
             Main.ContentThatNeedsRenderTargets.Add(bloomRT = new BloomRT());
 
             beamEffect = ModContent.Request<Effect>("ChaosOverload/Effects/Shaders/BeamShader", AssetRequestMode.ImmediateLoad).Value;
-
-            Asset<Effect> bloom = ChaosOverload.Instance.Assets.Request<Effect>("Effects/Shaders/BeamScreenShader", AssetRequestMode.ImmediateLoad);
-            beamShaderEffect = bloom.Value;
-
-            Filters.Scene["Bloom"] = new Filter(new ScreenShaderData(bloom, "P0"), EffectPriority.High);
-            Filters.Scene["Bloom"].Load();
+            beamShaderEffect = ModContent.Request<Effect>("ChaosOverload/Effects/Shaders/BeamScreenShader", AssetRequestMode.ImmediateLoad).Value;;
         }
 
         public override void PostDrawTiles()
