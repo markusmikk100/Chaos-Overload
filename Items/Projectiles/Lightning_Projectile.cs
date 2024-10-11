@@ -14,6 +14,11 @@ namespace ChaosOverload.Items.Projectiles
         private bool isLaunched = false; // Track whether the projectile has been launched
         private float chargeTime = 0f; // Time the projectile has been charging
 
+        private int rippleCount = 3;
+        private int rippleSize = 5;
+        private int rippleSpeed = 15;
+        private float distortStrength = 100f;
+
         public override void SetDefaults()
         {
             Projectile.width = 130;

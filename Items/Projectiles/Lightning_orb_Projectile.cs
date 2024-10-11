@@ -10,6 +10,7 @@ using Terraria.Graphics.Effects;
 using Terraria.Graphics.Shaders;
 
 
+
 namespace ChaosOverload.Items.Projectiles
 {
 
@@ -17,6 +18,14 @@ namespace ChaosOverload.Items.Projectiles
     {
         private bool isLaunched = false;
         private float chargeTime = 0f;
+
+
+        private int rippleCount = 3;
+        private int rippleSize = 15;
+        private int rippleSpeed = 15;
+        private float distortStrength = 100f;
+
+
 
 
         public override void SetDefaults()
@@ -31,6 +40,7 @@ namespace ChaosOverload.Items.Projectiles
             Projectile.light = 1f;
             Projectile.penetrate = -1;
             Main.projFrames[Projectile.type] = 4;
+            Projectile.timeLeft = 36000;
         }
 
         public override bool PreDraw(ref Color lightColor)
@@ -191,7 +201,6 @@ namespace ChaosOverload.Items.Projectiles
                 float speed = 15f - chargeTime * 0.01f;                                                     //speed
                 speed = Math.Max(speed, 1f);
                 Projectile.velocity = direction * speed;
-
             }
         }
 
@@ -229,6 +238,7 @@ namespace ChaosOverload.Items.Projectiles
 
         public override void OnKill(int timeLeft)
         {
+            ActivateShockwave();
             Explode();
             PunchCameraModifier modifier = new PunchCameraModifier(Projectile.Center, (Main.rand.NextFloat() * ((float)Math.PI * 2f)).ToRotationVector2(), (chargeTime * 0.075f), 6f, 20, -1, FullName);
             Main.instance.CameraModifiers.Add(modifier); //SCREEN SHAKEEE WOO
@@ -361,7 +371,7 @@ namespace ChaosOverload.Items.Projectiles
 
         private void PullNearbyEnemies1()  //GLITCH DUMMYS
         {
-            float pullRadius = 100f + chargeTime*0.3f; // Radius around the projectile to pull enemies
+            float pullRadius = 100f + chargeTime*0.4f; // Radius around the projectile to pull enemies
             float pullStrength = 2f; // Adjust the strength of the pulling force
 
             for (int i = 0; i < Main.maxNPCs; i++)
@@ -388,6 +398,25 @@ namespace ChaosOverload.Items.Projectiles
                         }
                     }
                 }
+            }
+        }
+
+        private void ActivateShockwave()
+        {
+            if (Main.netMode != NetmodeID.Server && !Filters.Scene["Shockwave"].IsActive())
+            {
+                Filters.Scene.Activate("Shockwave", Projectile.Center)
+                    .GetShader()
+                    .UseColor(rippleCount, rippleSize, rippleSpeed)
+                    .UseTargetPosition(Projectile.Center);
+            }
+
+            if (Main.netMode != NetmodeID.Server && Filters.Scene["Shockwave"].IsActive())
+            {
+                float progress = (180f - Projectile.timeLeft) / 60f; // Progress based on time left
+                Filters.Scene["Shockwave"].GetShader()
+                    .UseProgress(progress)
+                    .UseOpacity(distortStrength * (1 - progress / 3f));
             }
         }
 
