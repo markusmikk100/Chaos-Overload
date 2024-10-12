@@ -9,20 +9,20 @@ Items: {
 		Tooltip: ""
 	}
 
-	BeamGun: {
-		DisplayName: Beam Gun
-		Tooltip: ""
-	}
-
 	Lightning_orb: {
 		DisplayName: ◎
 		Tooltip: Evergrowing mass of magic
+	}
+
+	GodRayBook: {
+		DisplayName: God Ray Book
+		Tooltip: ""
 	}
 }
 
 Projectiles: {
 	Lightning_Projectile.DisplayName: Lightning_ Projectile
-	Beam.DisplayName: Beam
 	Lightning_orb_Projectile.DisplayName: Lightning_orb_ Projectile
 	Shockwave_Projectile.DisplayName: Shockwave_ Projectile
+	GodRay.DisplayName: God Ray
 }
