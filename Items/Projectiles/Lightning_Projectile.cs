@@ -13,7 +13,6 @@ namespace ChaosOverload.Items.Projectiles
     {
         private bool isLaunched = false; // Track whether the projectile has been launched
         private float chargeTime = 0f; // Time the projectile has been charging
-
         public override void SetDefaults()
         {
             Projectile.width = 130;
@@ -156,7 +155,6 @@ namespace ChaosOverload.Items.Projectiles
                 Projectile.scale,
                 SpriteEffects.None,
                 0f);
-
         }
 
     }

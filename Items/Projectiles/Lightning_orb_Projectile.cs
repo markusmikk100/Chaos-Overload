@@ -10,6 +10,7 @@ using Terraria.Graphics.Effects;
 using Terraria.Graphics.Shaders;
 
 
+
 namespace ChaosOverload.Items.Projectiles
 {
 
@@ -17,7 +18,6 @@ namespace ChaosOverload.Items.Projectiles
     {
         private bool isLaunched = false;
         private float chargeTime = 0f;
-
 
         public override void SetDefaults()
         {
@@ -31,6 +31,7 @@ namespace ChaosOverload.Items.Projectiles
             Projectile.light = 1f;
             Projectile.penetrate = -1;
             Main.projFrames[Projectile.type] = 4;
+            Projectile.timeLeft = 36000;
         }
 
         public override bool PreDraw(ref Color lightColor)
@@ -191,7 +192,6 @@ namespace ChaosOverload.Items.Projectiles
                 float speed = 15f - chargeTime * 0.01f;                                                     //speed
                 speed = Math.Max(speed, 1f);
                 Projectile.velocity = direction * speed;
-
             }
         }
 
@@ -201,19 +201,6 @@ namespace ChaosOverload.Items.Projectiles
             float delta = 38 * multiplier - hitbox.Size().X;
             hitbox.Inflate((int)delta, (int)delta);
         }
-
-        //public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
-        //{
-        //    totalDamageDealt += damageDone;
-
-        //    Main.NewText($"Projectile has dealt a total of {totalDamageDealt} and {chargeTime}.");
-
-
-        //    if (totalDamageDealt >= 1500)
-        //    {
-        //        Projectile.Kill();
-        //    }
-        //}
 
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
         {
@@ -232,6 +219,18 @@ namespace ChaosOverload.Items.Projectiles
             Explode();
             PunchCameraModifier modifier = new PunchCameraModifier(Projectile.Center, (Main.rand.NextFloat() * ((float)Math.PI * 2f)).ToRotationVector2(), (chargeTime * 0.075f), 6f, 20, -1, FullName);
             Main.instance.CameraModifiers.Add(modifier); //SCREEN SHAKEEE WOO
+
+            // Spawn the new projectile
+            Projectile.NewProjectile(
+                Projectile.GetSource_FromThis(), // Source of the new projectile
+                Projectile.Center,                                       // Spawn position
+                new Vector2(0,0),                                           // Velocity of the new projectile
+                ModContent.ProjectileType<Shockwave_Projectile>(),   // Type of projectile to spawn (customize this)
+                Projectile.damage,                                       // Damage of the new projectile
+                Projectile.knockBack,                                    // Knockback for the new projectile
+                Projectile.owner,                 // Owner of the projectile
+                chargeTime
+            );
         }
 
         private void Explode()
@@ -361,7 +360,7 @@ namespace ChaosOverload.Items.Projectiles
 
         private void PullNearbyEnemies1()  //GLITCH DUMMYS
         {
-            float pullRadius = 100f + chargeTime*0.3f; // Radius around the projectile to pull enemies
+            float pullRadius = 100f + chargeTime*0.4f; // Radius around the projectile to pull enemies
             float pullStrength = 2f; // Adjust the strength of the pulling force
 
             for (int i = 0; i < Main.maxNPCs; i++)
@@ -390,7 +389,6 @@ namespace ChaosOverload.Items.Projectiles
                 }
             }
         }
-
     }
 }
     
