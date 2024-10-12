@@ -23,10 +23,16 @@ Items: {
 		DisplayName: Lightning_orb
 		Tooltip: ""
 	}
+
+	GodRayBook: {
+		DisplayName: God Ray Book
+		Tooltip: ""
+	}
 }
 
 Projectiles: {
 	Lightning_Projectile.DisplayName: Lightning_ Projectile
 	Beam.DisplayName: Beam
 	Lightning_orb_Projectile.DisplayName: Lightning_orb_ Projectile
+	GodRay.DisplayName: God Ray
 }
