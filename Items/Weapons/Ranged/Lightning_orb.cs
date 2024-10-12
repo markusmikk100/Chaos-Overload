@@ -32,7 +32,6 @@ namespace ChaosOverload.Items.Weapons.Ranged
             Item.knockBack = 2;
             Item.value = Item.sellPrice(gold: 50);
             Item.rare = ItemRarityID.Blue;
-            Item.UseSound = SoundID.Item75;
             Item.shoot = ModContent.ProjectileType<Lightning_orb_Projectile>();
             Item.shootSpeed = 10f;
             Item.useAmmo = AmmoID.None; // No ammo for magic weapons

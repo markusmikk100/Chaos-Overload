@@ -107,8 +107,7 @@ namespace ChaosOverload.Items.Projectiles
 
         public override void AI()
         {
-
-            Projectile.frameCounter++; // Increment the frame counter every tick (1/60th of a second)
+                Projectile.frameCounter++; // Increment the frame counter every tick (1/60th of a second)
 
             // Change frame every 5 ticks (adjust to make animation faster/slower)
             if (Projectile.frameCounter >= 1.5)
@@ -131,6 +130,8 @@ namespace ChaosOverload.Items.Projectiles
             // If the player is still channeling (holding the shoot button)
             if (player.channel && !isLaunched)
             {
+                SoundEngine.PlaySound(SoundID.Item132, Projectile.position);
+
                 if (chargeTime < 60)
                 {
                     charge();
@@ -163,11 +164,14 @@ namespace ChaosOverload.Items.Projectiles
 
                 chargeTime += 1f;
 
+                if (chargeTime == 1f)
+                {
+        
+                }
+
                 Projectile.position = player.Center + new Vector2(-18, -player.height - 45 - (chargeTime * 0.2f));
 
                 Projectile.velocity = Vector2.Zero;
-
-                SoundEngine.PlaySound(SoundID.Item75, Projectile.position);
 
                 float damage = chargeTime * 8f;                                                              //DMG
                 Projectile.damage = (int)damage;
@@ -178,6 +182,7 @@ namespace ChaosOverload.Items.Projectiles
             else if (!player.channel && !isLaunched) // If the player releases the shoot button
             {
                 isLaunched = true;
+                SoundEngine.PlaySound(SoundID.Item74, Projectile.position);
 
                 Projectile.tileCollide = true;
 
@@ -293,7 +298,6 @@ namespace ChaosOverload.Items.Projectiles
 
         private void charge()
         {
-            SoundEngine.PlaySound(SoundID.DD2_ExplosiveTrapExplode, Projectile.position);
 
             Player player = Main.player[Projectile.owner];
 
@@ -315,8 +319,6 @@ namespace ChaosOverload.Items.Projectiles
         }
         private void charge2()
         {
-            SoundEngine.PlaySound(SoundID.DD2_ExplosiveTrapExplode, Projectile.position);
-
             Player player = Main.player[Projectile.owner];
 
             Vector2 offset = new Vector2(1000, 800);
@@ -337,8 +339,6 @@ namespace ChaosOverload.Items.Projectiles
         }
         private void charge3()
         {
-            SoundEngine.PlaySound(SoundID.DD2_ExplosiveTrapExplode, Projectile.position);
-
             Player player = Main.player[Projectile.owner];
 
             Vector2 offset = new Vector2(1000, 800);
