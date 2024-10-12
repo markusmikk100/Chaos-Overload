@@ -14,14 +14,9 @@ Items: {
 		Tooltip: ""
 	}
 
-	Lightning_ball: {
-		DisplayName: Lightning_ball
-		Tooltip: ""
-	}
-
 	Lightning_orb: {
-		DisplayName: Lightning_orb
-		Tooltip: ""
+		DisplayName: ◎
+		Tooltip: Evergrowing mass of magic
 	}
 }
 

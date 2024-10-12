@@ -16,11 +16,6 @@ namespace ChaosOverload.Items.Weapons.Ranged
     internal class Lightning_orb : ModItem
     {
         private int channelTime = 0;
-        public override void SetStaticDefaults()
-        {
-            //DisplayName.SetDefault("Lightning Orb");  // Set the display name of the item
-            //Tooltip.SetDefault("Zap your enemies with a powerful lightning orb!");  // Set the tooltip
-        }
 
         public override void SetDefaults()
         {
@@ -77,33 +72,24 @@ namespace ChaosOverload.Items.Weapons.Ranged
         {
             if (player.channel)
             {
-                channelTime++; // Increment the time spent channeling
 
-                // Scale the mana cost based on channel time (e.g., increase cost faster the longer you hold)
-                int manaCost = 1/2 + channelTime / 120; // Base 1 mana cost, increases by 1 every second (60 frames)
+                channelTime++;
+               
+                int manaCost = 1;
 
-                if (player.statMana >= manaCost) // Ensure the player has enough mana
+                if (player.CheckMana(manaCost, true))
                 {
-                    player.statMana -= manaCost; // Deduct scaled mana cost
+                    player.statMana -= manaCost;
 
-                    // Prevent negative mana
-                    if (player.statMana < 0)
-                    {
-                        player.statMana = 0;
-                    }
-
-                    // Reset mana regeneration delay
-                    player.manaRegenDelay = 60; // Prevent mana regeneration during channeling
+                    player.manaRegenDelay = 60;
                 }
                 else
                 {
-                    // If the player runs out of mana, stop the channeling
                     player.channel = false;
                 }
             }
             else
             {
-                // Reset the channelTime when channeling ends
                 channelTime = 0;
             }
         }
